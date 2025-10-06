@@ -68,4 +68,3 @@ pipeline {
     }
   }
 }
-Écrire à Islem Abidi
