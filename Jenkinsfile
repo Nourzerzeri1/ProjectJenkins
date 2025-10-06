@@ -1,47 +1,49 @@
 pipeline {
   agent any
+
   tools {
-    maven 'Maven3'     // nom configuré dans Global Tool Configuration
-    jdk 'jdk11'        // nom configuré
+    maven 'M2_HOME'     
+    jdk 'JAVA_HOME'       
   }
+
   environment {
-    // NE PAS mettre le token ici en clair. Le token est injecté via Manage Jenkins -> Credentials.
-    SONAR_INSTALL = 'SonarQube' // nom donné dans "SonarQube servers" dans Jenkins
+    SONAR_INSTALL = 'SonarQ1' 
   }
+
   stages {
-    stage('1 - Checkout (git)') {
+
+    stage('1 - Checkout (Git)') {
       steps {
         checkout scm
-        // ou: git branch: 'main', url: 'https://github.com/TON_USER/TP-Foyer.git', credentialsId: 'git-cred-id'
       }
     }
 
-    stage('2 - Maven clean') {
+    stage('2 - Maven Clean') {
       steps {
+        echo ' Nettoyage du projet...'
         sh 'mvn -B clean'
       }
     }
 
-    stage('3 - Maven compile (package)') {
+    stage('3 - Maven Compile') {
       steps {
-        // on fait package pour avoir les classes compilées (nécessaire à Sonar)
-        sh 'mvn -B -DskipTests=true package'
+        echo 'Compilation du projet'
+        sh 'mvn -B -DskipTests=true compile'
       }
     }
 
-    stage('4 - SonarQube analysis') {
+    stage('4 - SonarQube Analysis') {
       steps {
-        // withSonarQubeEnv injecte les infos serveur (URL, token) configurées dans Jenkins.
+        echo 'Lancement de l’analyse SonarQube'
         withSonarQubeEnv("${SONAR_INSTALL}") {
-          // mvn sonar:sonar lancera l'analyse ; on a déjà compilé au stage précédent.
           sh 'mvn -B sonar:sonar'
         }
       }
     }
 
-    stage('5 - Build final & archive jar') {
+    stage('5 - Build & Archive JAR') {
       steps {
-        // relancer package sans skipTests si tu veux exécuter les tests
+        echo 'Construction du package final'
         sh 'mvn -B -DskipTests=false package'
         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
       }
@@ -49,7 +51,7 @@ pipeline {
 
     stage('Quality Gate') {
       steps {
-        // attends le résultat Sonar (timeout pour éviter blocage infini)
+        echo 'Vérification du Quality Gate SonarQube...'
         timeout(time: 15, unit: 'MINUTES') {
           waitForQualityGate abortPipeline: true
         }
@@ -59,10 +61,11 @@ pipeline {
 
   post {
     success {
-      echo 'Pipeline terminé: SUCCESS'
+      echo 'Pipeline terminé avec succès'
     }
     failure {
-      echo 'Pipeline terminé: FAILURE'
+      echo 'Échec du pipeline.'
     }
   }
 }
+Écrire à Islem Abidi
