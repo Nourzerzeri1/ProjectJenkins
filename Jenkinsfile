@@ -7,7 +7,7 @@ pipeline {
   }
 
   environment {
-    SONAR_INSTALL = 'SonarQ1' 
+    SONAR_INSTALL = 'sq1' 
   }
 
   stages {
