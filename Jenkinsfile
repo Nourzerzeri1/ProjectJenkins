@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         SONAR_INSTALL = 'sq1'
-        DOCKER_HUB_USER = credentials('touche403')   // ID du credential Jenkins pour Docker Hub
+        DOCKER_HUB_USER = credentials('docker-username')   // ID du credential Jenkins pour Docker Hub
         DOCKER_HUB_PASS = credentials('nourzerzeri')   // ID du credential Jenkins pour Docker Hub
     }
 
