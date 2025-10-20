@@ -88,10 +88,10 @@ pipeline {
             steps {
                 echo 'Déploiement de MySQL et du backend sur Kubernetes...'
                 sh """
-                    kubectl apply -f k8s/mysql-secret.yaml
-                    kubectl apply -f k8s/mysql-pvc.yaml
-                    kubectl apply -f k8s/mysql-deployment.yaml
-                    kubectl apply -f k8s/restaurant-app-deployment.yaml
+                    kubectl apply -f ~/mysql-secret.yaml
+                    kubectl apply -f ~/mysql-pvc.yaml
+                    kubectl apply -f ~/mysql-deployment.yaml
+                    kubectl apply -f ~/restaurant-app-deployment.yaml
                     kubectl rollout status deployment/mysql
                     kubectl rollout status deployment/restaurant-app
                 """
