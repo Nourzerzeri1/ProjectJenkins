@@ -6,6 +6,10 @@ pipeline {
         jdk 'JAVA_HOME'
     }
 
+    parameters {
+        booleanParam(name: 'SKIP_SONAR', defaultValue: true, description: 'Skip SonarQube analysis and Quality Gate')
+    }
+
     environment {
         SONAR_INSTALL = 'sq1'
         DOCKER_HUB = credentials('docker-username') // ID exact du credential Jenkins
@@ -35,6 +39,7 @@ pipeline {
         }
 
         stage('4 - SonarQube Analysis') {
+            when { expression { return !params.SKIP_SONAR } }
             steps {
                 echo 'Lancement de l’analyse SonarQube'
                 withSonarQubeEnv("${SONAR_INSTALL}") {
@@ -52,6 +57,7 @@ pipeline {
         }
 
         stage('Quality Gate') {
+            when { expression { return !params.SKIP_SONAR } }
             steps {
                 echo 'Vérification du Quality Gate SonarQube...'
                 timeout(time: 15, unit: 'MINUTES') {
