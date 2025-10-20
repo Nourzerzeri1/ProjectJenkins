@@ -8,8 +8,7 @@ pipeline {
 
     environment {
         SONAR_INSTALL = 'sq1'
-        DOCKER_HUB_USER = credentials('docker-username')   // ID du credential Jenkins pour Docker Hub
-        DOCKER_HUB_PASS = credentials('nourzerzeri')   // ID du credential Jenkins pour Docker Hub
+        DOCKER_HUB = credentials('docker-username') // ID exact du credential Jenkins
     }
 
     stages {
@@ -73,7 +72,7 @@ pipeline {
             steps {
                 echo 'Push de l’image Docker sur Docker Hub...'
                 sh """
-                    echo $DOCKER_HUB_PASS | docker login -u $DOCKER_HUB_USER --password-stdin
+                    echo \$DOCKER_HUB_PSW | docker login -u \$DOCKER_HUB_USR --password-stdin
                     docker push touche403/restaurant-app:v1
                 """
             }
@@ -92,7 +91,6 @@ pipeline {
                 """
             }
         }
-
     }
 
     post {
